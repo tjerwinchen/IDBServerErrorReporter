@@ -71,7 +71,8 @@ class ErrorScanner(object):
             self.error_text += u'Line %d: %s' % (self.line_number_scanned, line_str)
 
             self.error_html += u'''<hr><h3>Error %d:</h3>''' % self.error_count
-            self.error_html += u'''<table><tr><td>%sLine %d: &nbsp;&nbsp; %s''' % (('').join(self.foregoing_context_html), self.line_number_scanned, line_str)
+            self.error_html += u'''<table><tr><td>%s</td></tr><tr><td>----------------</td></tr>'''% ('').join(self.foregoing_context_html)
+            self.error_html += u'''<tr><td>Line %d: &nbsp;&nbsp; %s''' % (self.line_number_scanned, line_str)
 
             self.friend_fire_count = 5
 
@@ -87,7 +88,7 @@ class ErrorScanner(object):
                 self.foregoing_context_text.pop(0)
             if len(self.foregoing_context_html) == 5:
                 self.foregoing_context_html.pop(0)
-            if len(self.foregoing_context_text) > 5 or len(self.foregoing_context_html):
+            if len(self.foregoing_context_text) > 5 or len(self.foregoing_context_html) > 5:
                 raise
             self.foregoing_context_text.append( u'Line %d: %s\n' % (self.line_number_scanned, line_str))
             self.foregoing_context_html.append(u'''<br>Line %d: &nbsp;&nbsp; %s''' % (self.line_number_scanned, line_str))
