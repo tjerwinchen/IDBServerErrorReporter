@@ -32,7 +32,7 @@ IDB Server Error Reporter<br><br>
         ''' % (scanner.error_count, scanner.error_html)
         import codecs
         # Record the MIME types of both parts - text/plain and text/html.
-        print text
+        # print text
 
         part1 = MIMEText(text, 'plain', 'utf-8')
         part2 = MIMEText(html, 'html', 'utf-8')

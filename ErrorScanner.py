@@ -33,8 +33,9 @@ class ErrorScanner(object):
 
                 #print last_scanned_line
         except StopIteration:
-            print self.error_text
-            print self.error_html
+            #print self.error_text
+            #print self.error_html
+            print u'Find %d new errors' % self.error_count
 
         f.close()
 
@@ -49,14 +50,14 @@ class ErrorScanner(object):
             self.error_html += '''<hr><h3>Error %d:</h3>''' % self.error_count
             self.error_html += '''<table><tr><td>Line %d: &nbsp;&nbsp; %s</tr></td></table>''' % (self.line_number_scanned, line_str)
 
-            print self.line_number_scanned, line_str
+            #print self.line_number_scanned, line_str
 
         # Case 2: Error with Java Exception
         elif self.is_java_exception_header(line_str):
             # If the line string is a Java Exception
             # We will get all the Exception
 
-            print self.line_number_scanned, line_str
+            #print self.line_number_scanned, line_str
 
             self.error_count += 1
             self.error_text += u'--- Error %d ---\n' % self.error_count

@@ -69,6 +69,7 @@ def start_reporter():
     write_config_to_file()
 
 
+"""
 def start_file_observer(file_path):
     '''
     Check whether the log file has been modified
@@ -76,6 +77,7 @@ def start_file_observer(file_path):
     print u'Monitoring %s' % path_leaf(Config.path_for_log_file)
     # We only need to monitor the file *catalina.out
     event_handler = MyHandler(patterns=["*%s" % path_leaf(Config.path_for_log_file)], ignore_directories=True)
+    #event_handler = MyHandler(patterns=["*.txt", ], ignore_directories=True)
     observer = Observer()
     observer.schedule(event_handler, path_root(Config.path_for_log_file), recursive=False)
     observer.start()
@@ -85,11 +87,22 @@ def start_file_observer(file_path):
     except KeyboardInterrupt:
         observer.stop()
     observer.join()
+"""
 
+def start_file_observer(file_path):
+    print u'Monitoring %s' % path_leaf(Config.path_for_log_file)
+    handler = MyHandler()
+    while True:
+        handler.check_file_info()
+        time.sleep(10)
 
 class MyHandler(PatternMatchingEventHandler):
     def __init__(self, patterns=None, ignore_patterns=None, ignore_directories=False, case_sensitive=False):
         PatternMatchingEventHandler.__init__(self, patterns, ignore_patterns, ignore_directories, case_sensitive)
+
+	
+	def on_any_event(event):
+		print event		
 
     def on_modified(self, event):
         print event
@@ -105,23 +118,25 @@ class MyHandler(PatternMatchingEventHandler):
             print u'failed to get information about', Config.path_for_log_file
         else:
             if st[ST_SIZE]/1024/1024/1024 > 0:
-                print u'file size: %.2f GB' % (st[ST_SIZE]/1024.0/1024.0/1024.0)
+                filesize = u'file size: %.2f GB' % (st[ST_SIZE]/1024.0/1024.0/1024.0)
             elif st[ST_SIZE]/1024/1024 > 0:
-                print u'file size: %.2f MB' % (st[ST_SIZE]/1024.0/1024.0)
+                filesize = u'file size: %.2f MB' % (st[ST_SIZE]/1024.0/1024.0)
             elif st[ST_SIZE]/1024 > 0:
-                print u'file size: %.2f KB' % (st[ST_SIZE]/1024.0)
+                filesize = u'file size: %.2f KB' % (st[ST_SIZE]/1024.0)
             else:
-                print u'file size: %d B' % st[ST_SIZE]
+                filesize = u'file size: %d B' % st[ST_SIZE]
 
             # 首先，查看create time whether changed, if changed, we should rescan the whole log file
-            if st[ST_CTIME] > Config.log_file_last_created_time_in_record:
+            if st[ST_CTIME] < Config.log_file_last_created_time_in_record:
                 print u'file recreated:', time.asctime(time.localtime(st[ST_CTIME]))
+                print filesize
                 Config.last_scanned_number_in_record = 0 # 要从0行开始扫描
                 Config.log_file_last_created_time_in_record = st[ST_CTIME]
                 start_reporter()
             # 如果Size发生了变化，我们认为，文件是真正发生了改变化
             elif st[ST_SIZE] > Config.size_for_log_file_in_record:
                 print u'file modified:', time.asctime(time.localtime(st[ST_MTIME]))
+                print filesize
                 Config.size_for_log_file_in_record = st[ST_SIZE]
                 start_reporter()
 
