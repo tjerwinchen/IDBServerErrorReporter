@@ -1,6 +1,7 @@
 __author__ = 'theochen'
 
 import smtplib
+import platform
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from IDBServerErrorReporterConfig import Config
@@ -38,9 +39,24 @@ IDB Server Error Reporter<br><br>
         part1 = MIMEText(text, 'plain', 'utf-8')
         part2 = MIMEText(html, 'html', 'utf-8')
 
+        # If it is Windows platform
+        ip = u'127.0.0.1'
+        import socket
+        hostname = socket.gethostname()
+
+        if platform.platform().startswith('Windows'):
+            ip = socket.gethostbyname(hostname)
+        # Else we assume it is Linux-related platform
+        else:
+            try:
+                import netifaces as ni
+                ip = ni.ifaddresses('eth0')[2][0]['addr']
+            except:
+                print u'Cannot access the network information'
+
         # Create message container - the correct MIME type is multipart/alternative.
         msg = MIMEMultipart('alternative')
-        msg['Subject'] = u'[IDB Error Reporter] %s Error occurs in IDB Server' % scanner.error_count
+        msg['Subject'] = u'[From %s:%s - IDB Error Reporter] %s Error occurs in IDB Server' % (hostname, ip, scanner.error_count)
         msg['From'] = Config.mail_from
         msg['To'] = ",".join(email for email in Config.mail_receiptants)
 
