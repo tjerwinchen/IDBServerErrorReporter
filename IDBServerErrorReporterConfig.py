@@ -18,7 +18,7 @@ class DefaultConfig(object):
     mail_receiptants = [u'theo.chen@sumscope.com',]
 
     # Location of error log file
-    path_for_log_file = u'C:\\Users\\theochen\\IdeaProjects\\logs\\catalina.out'
+    path_for_log_file = u'D:\\svn\\Tools\\IDBServerErrorReporter\\catalina.out'
 
     # The line number from last scanned
     last_scanned_number_in_record = 0

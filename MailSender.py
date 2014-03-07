@@ -30,9 +30,10 @@ IDB Server Error Reporter<br><br>
 %s
 </html>
         ''' % (scanner.error_count, scanner.error_html)
+
         import codecs
         # Record the MIME types of both parts - text/plain and text/html.
-        print text
+        #print text
 
         part1 = MIMEText(text, 'plain', 'utf-8')
         part2 = MIMEText(html, 'html', 'utf-8')
@@ -58,4 +59,5 @@ IDB Server Error Reporter<br><br>
         smtp.login(Config.auth_user, Config.auth_passwd)
         smtp.sendmail(Config.mail_from, Config.mail_receiptants, msg.as_string())
         smtp.quit()
+        print u'mail send to [%s]' % ", ".join(Config.mail_receiptants)
 

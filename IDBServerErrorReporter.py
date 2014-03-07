@@ -7,7 +7,6 @@ from ErrorScanner import ErrorScanner
 from IDBServerErrorReporterConfig import Config
 from MailSender import MailSender
 from watchdog.observers import Observer
-from watchdog.events import LoggingEventHandler
 from watchdog.events import PatternMatchingEventHandler
 
 __author__ = 'theochen'
@@ -57,6 +56,7 @@ def start_reporter():
     scanner.scanning_error()
 
     if scanner.error_count > 0:
+        print '------------------------- Sending Mail ------------------------'
         # Sending error text
         mail_sender = MailSender()
         mail_sender.sending_email(scanner)
@@ -114,7 +114,7 @@ class MyHandler(PatternMatchingEventHandler):
                 print u'file size: %d B' % st[ST_SIZE]
 
             # 首先，查看create time whether changed, if changed, we should rescan the whole log file
-            if st[ST_CTIME] > Config.log_file_last_created_time_in_record:
+            if st[ST_CTIME] < Config.log_file_last_created_time_in_record:
                 print u'file recreated:', time.asctime(time.localtime(st[ST_CTIME]))
                 Config.last_scanned_number_in_record = 0 # 要从0行开始扫描
                 Config.log_file_last_created_time_in_record = st[ST_CTIME]
@@ -124,9 +124,6 @@ class MyHandler(PatternMatchingEventHandler):
                 print u'file modified:', time.asctime(time.localtime(st[ST_MTIME]))
                 Config.size_for_log_file_in_record = st[ST_SIZE]
                 start_reporter()
-
-
-
 
 if __name__ == '__main__':
     # 初始化
