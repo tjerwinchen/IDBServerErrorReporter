@@ -7,7 +7,6 @@ from ErrorScanner import ErrorScanner
 from IDBServerErrorReporterConfig import Config
 from MailSender import MailSender
 from watchdog.observers import Observer
-from watchdog.events import LoggingEventHandler
 from watchdog.events import PatternMatchingEventHandler
 
 __author__ = 'theochen'
@@ -57,6 +56,7 @@ def start_reporter():
     scanner.scanning_error()
 
     if scanner.error_count > 0:
+        print '------------------------- Sending Mail ------------------------'
         # Sending error text
         mail_sender = MailSender()
         mail_sender.sending_email(scanner)
@@ -139,9 +139,6 @@ class MyHandler(PatternMatchingEventHandler):
                 print filesize
                 Config.size_for_log_file_in_record = st[ST_SIZE]
                 start_reporter()
-
-
-
 
 if __name__ == '__main__':
     # 初始化
