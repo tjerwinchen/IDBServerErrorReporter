@@ -7,7 +7,7 @@ from ErrorScanner import ErrorScanner
 from IDBServerErrorReporterConfig import Config
 from MailSender import MailSender
 from watchdog.observers import Observer
-from watchdog.events import PatternMatchingEventHandler
+#from watchdog.events import PatternMatchingEventHandler
 
 __author__ = 'theochen'
 
@@ -96,9 +96,11 @@ def start_file_observer(file_path):
         handler.check_file_info()
         time.sleep(10)
 
-class MyHandler(PatternMatchingEventHandler):
+#class MyHandler(PatternMatchingEventHandler):
+class MyHandler(object):
     def __init__(self, patterns=None, ignore_patterns=None, ignore_directories=False, case_sensitive=False):
-        PatternMatchingEventHandler.__init__(self, patterns, ignore_patterns, ignore_directories, case_sensitive)
+        #PatternMatchingEventHandler.__init__(self, patterns, ignore_patterns, ignore_directories, case_sensitive)
+        pass
 
 	
 	def on_any_event(event):

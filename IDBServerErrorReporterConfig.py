@@ -28,6 +28,9 @@ class DefaultConfig(object):
     # The created time of log file last time checked
     log_file_last_created_time_in_record = 0
 
+    # Server Address
+    host_ip = u'xxx.xxx.xxx.xxx'
+
 
 # DEVELOPERS! Do not add or change your configuration items there,
 # you could accidentally commit them! Instead, create a

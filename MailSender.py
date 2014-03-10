@@ -49,8 +49,9 @@ IDB Server Error Reporter<br><br>
         # Else we assume it is Linux-related platform
         else:
             try:
-                import netifaces as ni
-                ip = ni.ifaddresses('eth0')[2][0]['addr']
+                #import netifaces as ni
+                #ip = ni.ifaddresses('eth0')[2][0]['addr']
+                ip = Config.host_ip
             except:
                 print u'Cannot access the network information'
 
