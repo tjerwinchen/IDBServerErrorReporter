@@ -4,6 +4,8 @@ __author__ = 'theochen'
 
 class DefaultConfig(object):
 
+    log_file_handler = None
+
     # Mail --------------------------------------------------------------
     # SMTP server, e.g. "mail.provider.com" (None to disable mail)
     mail_smarthost = u'smtp.qiye.163.com'

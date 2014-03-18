@@ -116,8 +116,14 @@ class MyHandler(object):
     def check_file_info(self):
         try:
             st = os.stat(Config.path_for_log_file)
-        except IOError:
-            print u'failed to get information about', Config.path_for_log_file
+            print Config.path_for_log_file
+
+        except IOError as e:
+            print "I/O error({0}): {1}".format(e.errno, e.strerror)
+        except WindowsError as e:
+            print "WindowsError error({0}): {1}".format(e.errno, e.strerror)
+        except Exception as e:
+            print "Unknown error({0}): {1}".format(e.errno, e.strerror)
         else:
             if st[ST_SIZE]/1024/1024/1024 > 0:
                 filesize = u'file size: %.2f GB' % (st[ST_SIZE]/1024.0/1024.0/1024.0)
@@ -133,7 +139,7 @@ class MyHandler(object):
                 print u'file recreated:', time.asctime(time.localtime(st[ST_CTIME]))
                 print filesize
                 Config.last_scanned_number_in_record = 0 # 要从0行开始扫描
-                Config.log_file_last_created_time_in_record = st[ST_CTIME]
+                Config.log_file_last_created_time_in_record = st[ST_MTIME]
                 Config.size_for_log_file_in_record = 0 # Size重新记为0
                 start_reporter()
             # 如果Size发生了变化，我们认为，文件是真正发生了改变化
@@ -143,7 +149,21 @@ class MyHandler(object):
                 Config.size_for_log_file_in_record = st[ST_SIZE]
                 start_reporter()
 
+        print u'file recreated:', time.asctime(time.localtime(st[ST_CTIME]))
+        print u'file modified:', time.asctime(time.localtime(st[ST_MTIME]))
+        print u'file size', st[ST_SIZE]
+        Config.log_file_handler = open('log.txt', 'a')
+        Config.log_file_handler.write(u'file recreated: %s\n'  % time.asctime(time.localtime(st[ST_CTIME])) )
+        Config.log_file_handler.write(u'file modified: %s\n' % time.asctime(time.localtime(st[ST_MTIME])))
+        Config.log_file_handler.write(u'file size %s\n' % st[ST_SIZE])
+        Config.log_file_handler.close()
+
+
+
+
+
 if __name__ == '__main__':
+
     # 初始化
     # Get the last scanned number recorded in file when program start
     values = read_config_from_file()
